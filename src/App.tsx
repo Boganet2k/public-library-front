@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {FC, useEffect} from 'react';
 import './App.css';
+import AppRouter from "./components/AppRouter";
+import {Layout, Menu, Breadcrumb, Row} from "antd";
+import Navbar from "./components/Navbar";
+import {useActions} from "./hooks/useActions";
+import {IUser} from "./models/IUser";
 
-function App() {
+const { Header, Content, Footer } = Layout;
+
+const App:FC = () => {
+
+    const {setUser, setIsAuth} = useActions();
+
+    useEffect(() => {
+        if(localStorage.getItem('auth')) {
+            setUser({username: localStorage.getItem('username' || '')} as IUser)
+            setIsAuth(true);
+        }
+    }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout className="layout">
+        <Navbar/>
+        <Layout.Content style={{ padding: '0 50px' }}>
+
+            <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>List</Breadcrumb.Item>
+                <Breadcrumb.Item>App</Breadcrumb.Item>
+            </Breadcrumb>
+
+            <AppRouter/>
+        </Layout.Content>
+    </Layout>
   );
-}
+};
 
 export default App;

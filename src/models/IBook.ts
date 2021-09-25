@@ -1,6 +1,6 @@
 export interface IBook {
     key: string;
-    id: bigint;
+    id: number;
     title: string;
     author: string;
     description: string;

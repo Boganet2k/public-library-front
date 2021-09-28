@@ -1,5 +1,4 @@
 import {IBook} from "../../../models/IBook";
-import {AuthActionEnum, SetAuthAction} from "../auth/types";
 import {IUser} from "../../../models/IUser";
 
 export interface BookState {

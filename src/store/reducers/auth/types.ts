@@ -12,7 +12,9 @@ export enum AuthActionEnum {
     SET_ERROR = "SET_ERROR",
     SET_USER = "SET_USER",
     SET_IS_LOADING = "SET_IS_LOADING",
-    SAGA_SIGNUP = "SAGA_SIGNUP"
+    SAGA_SIGNUP = "SAGA_SIGNUP",
+    SAGA_SIGNIN = "SAGA_SIGNIN",
+    SAGA_SIGNOUT = "SAGA_SIGNOUT"
 }
 
 export interface SetAuthAction {
@@ -42,6 +44,16 @@ export interface SetIsLoadingAction {
 
 export interface SagaSignupAction {
     type: AuthActionEnum.SAGA_SIGNUP;
+    payload: IUser;
+}
+
+export interface SagaSigninAction {
+    type: AuthActionEnum.SAGA_SIGNIN;
+    payload: IUser;
+}
+
+export interface SagaSignoutAction {
+    type: AuthActionEnum.SAGA_SIGNOUT;
     payload: IUser;
 }
 

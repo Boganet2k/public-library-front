@@ -1,5 +1,6 @@
 import {IBook} from "../../../models/IBook";
 import {AuthActionEnum, SetAuthAction} from "../auth/types";
+import {IUser} from "../../../models/IUser";
 
 export interface BookState {
     books: IBook[];
@@ -20,6 +21,7 @@ export interface SetBookAction {
 
 export interface SagaLoadBooksAction {
     type: BookActionEnum.SAGA_LOAD_BOOKS;
+    payload: IUser;
 }
 
 export interface SagaSaveBookAction {

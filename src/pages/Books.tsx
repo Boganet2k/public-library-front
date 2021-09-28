@@ -11,9 +11,10 @@ const Books: FC = () => {
     const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook} = useActions();
     const [modalVisible, setModalVisible] = useState(false);
     const {books} = useTypedSelector(state => state.book);
+    const {user} = useTypedSelector(state => state.auth);
 
     useEffect(() => {
-        sagaLoadBooks();
+        sagaLoadBooks(user);
     }, [])
 
     const [bookForBookForm, setBookForBookForm] = useState<IBook>({title: "1"} as IBook);
@@ -24,6 +25,7 @@ const Books: FC = () => {
         //Save book to server
         console.log("addNewBook: ");
         console.log(book)
+        book.user = user;
 
         if (book.id) {
             sagaUpdateBook(book);
@@ -36,9 +38,19 @@ const Books: FC = () => {
 
         console.log("onEditBook: ");
         console.log(book)
+        book.user = user;
 
         setBookForBookForm(book);
         setModalVisible(true);
+    }
+
+    const onDeleteBook = (book: IBook) => {
+
+        console.log("onDeleteBook: ");
+        console.log(book)
+        book.user = user;
+
+        sagaDeleteBook(book);
     }
 
     return (
@@ -68,7 +80,7 @@ const Books: FC = () => {
                 :
                 <></>
             }
-            <BooksGrid books={books} onDelete={sagaDeleteBook} onEdit={onEditBook}/>
+            <BooksGrid books={books} onDelete={onDeleteBook} onEdit={onEditBook}/>
         </Layout>
     );
 };

@@ -8,6 +8,8 @@ const AppRouter = () => {
 
     const {isAuth} = useTypedSelector(state => state.auth);
 
+    console.log("AppRouter isAuth: " + isAuth);
+
     return (
 
         isAuth ?

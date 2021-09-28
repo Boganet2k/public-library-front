@@ -1,8 +1,7 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Button, Form, Input} from "antd";
 import {rules} from "../utils/rules";
 import {IBook} from "../models/IBook";
-import {useActions} from "../hooks/useActions";
 
 interface BookFormProps {
     book: IBook;
@@ -15,11 +14,6 @@ const BookForm: FC<BookFormProps> = (props) => {
 
     const submitForm = () => {
         props.submit(book)
-    }
-
-    {
-        console.log("BookForm");
-        console.log(book);
     }
 
     return (

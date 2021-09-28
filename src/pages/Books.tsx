@@ -5,6 +5,7 @@ import {useTypedSelector} from "../hooks/useTypedSelector";
 import {Button, Layout, Modal, Row} from "antd";
 import {IBook} from "../models/IBook";
 import BookForm from "../components/BookForm";
+import {jwtUtils} from "../utils/jwt";
 
 const Books: FC = () => {
 
@@ -34,7 +35,7 @@ const Books: FC = () => {
         }
     }
 
-    const onEditBook = (book: IBook) => {
+    const onEditBook = (book: IBook): void => {
 
         console.log("onEditBook: ");
         console.log(book)
@@ -44,7 +45,7 @@ const Books: FC = () => {
         setModalVisible(true);
     }
 
-    const onDeleteBook = (book: IBook) => {
+    const onDeleteBook = (book: IBook): void => {
 
         console.log("onDeleteBook: ");
         console.log(book)
@@ -53,9 +54,11 @@ const Books: FC = () => {
         sagaDeleteBook(book);
     }
 
+    let isAdmin = jwtUtils.isAdmin(user);
+
     return (
         <Layout>
-            <Row justify="end" style={{padding: '10px'}}>
+            <Row justify="end" style={{padding: '10px'}} hidden={!isAdmin}>
                 <Button
                     onClick={() => {
                         setBookForBookForm({} as IBook);
@@ -80,7 +83,7 @@ const Books: FC = () => {
                 :
                 <></>
             }
-            <BooksGrid books={books} onDelete={onDeleteBook} onEdit={onEditBook}/>
+            <BooksGrid isAdmin={isAdmin} books={books} onDelete={onDeleteBook} onEdit={onEditBook}/>
         </Layout>
     );
 };

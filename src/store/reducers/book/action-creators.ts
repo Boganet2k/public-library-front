@@ -7,8 +7,6 @@ import {
     SagaUpdateBookAction,
     SetBookAction
 } from "./types";
-import {AppDispatch} from "../../index";
-import BookService from "../../../api/BookService";
 import {IUser} from "../../../models/IUser";
 
 

@@ -1,14 +1,11 @@
 import React from 'react';
 import {Switch, Route, Redirect} from "react-router-dom";
 import {privateRoutes, publicRoutes, RouteNames} from "../routs";
-import Books from "../pages/Books";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 
 const AppRouter = () => {
 
     const {isAuth} = useTypedSelector(state => state.auth);
-
-    console.log("AppRouter isAuth: " + isAuth);
 
     return (
 

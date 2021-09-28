@@ -1,12 +1,10 @@
 import React, {FC, useEffect} from 'react';
 import './App.css';
 import AppRouter from "./components/AppRouter";
-import {Layout, Menu, Breadcrumb, Row} from "antd";
+import {Layout, Breadcrumb} from "antd";
 import Navbar from "./components/Navbar";
 import {useActions} from "./hooks/useActions";
 import {IUser} from "./models/IUser";
-
-const { Header, Content, Footer } = Layout;
 
 const App:FC = () => {
 

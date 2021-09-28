@@ -1,6 +1,8 @@
 import auth from './auth'
 import book from './book'
 
-export default {
+const reducerStore = {
     auth, book
 }
+
+export default reducerStore;

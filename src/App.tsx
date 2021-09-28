@@ -14,8 +14,8 @@ const App:FC = () => {
 
     useEffect(() => {
         if(localStorage.getItem('auth')) {
-            setUser({username: localStorage.getItem('username' || '')} as IUser)
-            setIsAuth(true);
+            setUser(JSON.parse(localStorage.getItem('user') || '{}') as IUser)
+            setIsAuth(localStorage.getItem('auth') === 'true');
         }
     }, [])
 
@@ -26,8 +26,7 @@ const App:FC = () => {
 
             <Breadcrumb style={{ margin: '16px 0' }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
-                <Breadcrumb.Item>List</Breadcrumb.Item>
-                <Breadcrumb.Item>App</Breadcrumb.Item>
+                <Breadcrumb.Item>Books</Breadcrumb.Item>
             </Breadcrumb>
 
             <AppRouter/>

@@ -1,20 +1,19 @@
 import React, {FC, useState} from 'react';
 import {Button, Form, Input} from "antd";
 import {rules} from "../utils/rules";
-import {useDispatch} from "react-redux";
-import {AuthActionCreators} from "../store/reducers/auth/action-creators";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useActions} from "../hooks/useActions";
+import {IUser} from "../models/IUser";
 
 const LoginForm: FC = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const {isLoading, error} = useTypedSelector(state => state.auth)
 
-    const {login} = useActions()
+    const {sagaSignUp} = useActions()
 
     const submit = () => {
-        login(username, password)
+        sagaSignUp({username: username, password: password} as IUser);
     }
 
     return (

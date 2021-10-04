@@ -6,6 +6,7 @@ import {Button, Layout, Modal, Row} from "antd";
 import {IBook} from "../models/IBook";
 import BookForm from "../components/BookForm";
 import {jwtUtils} from "../utils/jwt";
+import {IBookFilter} from "../models/IBookFilter";
 
 const Books: FC = () => {
 
@@ -15,7 +16,7 @@ const Books: FC = () => {
     const {user} = useTypedSelector(state => state.auth);
 
     useEffect(() => {
-        sagaLoadBooks(user);
+        sagaLoadBooks({user: user} as IBookFilter);
     }, [])
 
     const [bookForBookForm, setBookForBookForm] = useState<IBook>({title: "1"} as IBook);
@@ -54,6 +55,14 @@ const Books: FC = () => {
         sagaDeleteBook(book);
     }
 
+    const onRefreshBook = (bookFilter: IBookFilter): void => {
+        console.log("onRefreshBook: ");
+        console.log(bookFilter)
+
+        bookFilter.user = user;
+        sagaLoadBooks(bookFilter);
+    }
+
     let isAdmin = jwtUtils.isAdmin(user);
 
     return (
@@ -83,7 +92,7 @@ const Books: FC = () => {
                 :
                 <></>
             }
-            <BooksGrid isAdmin={isAdmin} books={books} onDelete={onDeleteBook} onEdit={onEditBook}/>
+            <BooksGrid isAdmin={isAdmin} books={books} onDelete={onDeleteBook} onEdit={onEditBook} onRefresh={onRefreshBook}/>
         </Layout>
     );
 };

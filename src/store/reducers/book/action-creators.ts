@@ -7,12 +7,12 @@ import {
     SagaUpdateBookAction,
     SetBookAction
 } from "./types";
-import {IUser} from "../../../models/IUser";
+import {IBookFilter} from "../../../models/IBookFilter";
 
 
 export const BookActionCreators = {
     setBooks: (books: IBook[]): SetBookAction => ({type: BookActionEnum.SET_BOOKS, payload: books}),
-    sagaLoadBooks: (user: IUser): SagaLoadBooksAction => ({type: BookActionEnum.SAGA_LOAD_BOOKS, payload: user}),
+    sagaLoadBooks: (bookFilter: IBookFilter): SagaLoadBooksAction => ({type: BookActionEnum.SAGA_LOAD_BOOKS, payload: bookFilter}),
     sagaSaveBook: (book: IBook): SagaSaveBookAction => ({type: BookActionEnum.SAGA_SAVE_BOOK, payload: book}),
     sagaUpdateBook: (book: IBook): SagaUpdateBookAction => ({type: BookActionEnum.SAGA_UPDATE_BOOK, payload: book}),
     sagaDeleteBook: (book: IBook): SagaDeleteBookAction => ({type: BookActionEnum.SAGA_DELETE_BOOK, payload: book})

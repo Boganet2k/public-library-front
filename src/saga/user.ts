@@ -3,8 +3,8 @@ import {call, put, takeEvery} from "redux-saga/effects";
 import {AuthActionEnum, SagaSigninAction, SagaSignoutAction, SagaSignupAction} from "../store/reducers/auth/types";
 import {AxiosResponse} from "axios";
 import UserService from "../api/UserService";
-import {AuthActionCreators} from "../store/reducers/auth/action-creators";
 import {jwtUtils} from "../utils/jwt";
+import {sagaUtils} from "../utils/saga";
 
 function* signUp(user: IUser) {
 
@@ -31,7 +31,7 @@ function* signUp(user: IUser) {
         isAuth = yield false
     }
 
-    yield updateAuthData(isAuth, resUser, error);
+    yield sagaUtils.updateAuthData(isAuth, resUser, error);
 }
 
 function* signIn(user: IUser) {
@@ -59,21 +59,12 @@ function* signIn(user: IUser) {
         isAuth = yield false
     }
 
-    yield updateAuthData(isAuth, resUser, error);
+    yield sagaUtils.updateAuthData(isAuth, resUser, error);
 }
 
 function* signOut(user: IUser) {
     yield call(UserService.signOut, user);
-    yield updateAuthData(false, {} as IUser, "");
-}
-
-function* updateAuthData(isAuth: boolean, user: IUser, error: string) {
-    yield localStorage.setItem('auth', isAuth.toString());
-    yield localStorage.setItem('user', JSON.stringify(user));
-
-    yield put(AuthActionCreators.setUser(user));
-    yield put(AuthActionCreators.setError(error));
-    yield put(AuthActionCreators.setIsAuth(isAuth));
+    yield sagaUtils.updateAuthData(false, {} as IUser, "");
 }
 
 export function* userWatcher() {

@@ -4,7 +4,7 @@ const initialState: BookState = {
     books: []
 }
 
-export default function authReducer(state = initialState, action: BookAction): BookState {
+export default function bookReducer(state = initialState, action: BookAction): BookState {
     switch (action.type) {
         case BookActionEnum.SET_BOOKS:
             return {...state, books: action.payload}

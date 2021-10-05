@@ -14,12 +14,8 @@ import {IUser} from "../models/IUser";
 import {IBookFilter} from "../models/IBookFilter";
 import {sagaUtils} from "../utils/saga";
 
-function* loadBook(user: IUser) {
-    yield loadBookFiltered({user: user} as IBookFilter);
-}
-
-function* loadBookFiltered(bookFilter: IBookFilter) {
-    const response: AxiosResponse<IBook[]> = yield call(BookService.loadBooks, bookFilter);
+function* loadBook(user: IUser, bookFilter: IBookFilter) {
+    const response: AxiosResponse<IBook[]> = yield call(BookService.loadBooks, user, bookFilter);
 
     if (response.status !== 200 || !Array.isArray(response.data)) {
         yield sagaUtils.updateAuthData(false, {} as IUser, "");
@@ -28,24 +24,24 @@ function* loadBookFiltered(bookFilter: IBookFilter) {
     }
 }
 
-function* saveBook(book: IBook) {
-    yield call(BookService.saveBook, book);
-    yield loadBook(book.user);
+function* saveBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
+    yield call(BookService.saveBook, user, book);
+    yield loadBook(user, bookFilter);
 }
 
-function* updateBook(book: IBook) {
-    yield call(BookService.updateBook, book);
-    yield loadBook(book.user);
+function* updateBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
+    yield call(BookService.updateBook, user, book);
+    yield loadBook(user, bookFilter);
 }
 
-function* deleteBook(book: IBook) {
-    yield call(BookService.deleteBook, book);
-    yield loadBook(book.user);
+function* deleteBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
+    yield call(BookService.deleteBook, user, book);
+    yield loadBook(user, bookFilter);
 }
 
 export function* bookWatcher() {
-    yield takeEvery(BookActionEnum.SAGA_LOAD_BOOKS, (action: SagaLoadBooksAction) => loadBookFiltered(action.payload));
-    yield takeEvery(BookActionEnum.SAGA_SAVE_BOOK, (action: SagaSaveBookAction) => saveBook(action.payload));
-    yield takeEvery(BookActionEnum.SAGA_UPDATE_BOOK, (action: SagaUpdateBookAction) => updateBook(action.payload));
-    yield takeEvery(BookActionEnum.SAGA_DELETE_BOOK, (action: SagaDeleteBookAction) => deleteBook(action.payload));
+    yield takeEvery(BookActionEnum.SAGA_LOAD_BOOKS, (action: SagaLoadBooksAction) => loadBook(action.payload.user, action.payload.filter));
+    yield takeEvery(BookActionEnum.SAGA_SAVE_BOOK, (action: SagaSaveBookAction) => saveBook(action.payload.user, action.payload.book, action.payload.filter));
+    yield takeEvery(BookActionEnum.SAGA_UPDATE_BOOK, (action: SagaUpdateBookAction) => updateBook(action.payload.user, action.payload.book, action.payload.filter));
+    yield takeEvery(BookActionEnum.SAGA_DELETE_BOOK, (action: SagaDeleteBookAction) => deleteBook(action.payload.user, action.payload.book, action.payload.filter));
 }

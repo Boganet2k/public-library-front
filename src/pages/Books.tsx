@@ -16,10 +16,11 @@ const Books: FC = () => {
     const {user} = useTypedSelector(state => state.auth);
 
     useEffect(() => {
-        sagaLoadBooks({user: user} as IBookFilter);
+        sagaLoadBooks(user, {} as IBookFilter);
     }, [])
 
-    const [bookForBookForm, setBookForBookForm] = useState<IBook>({title: "1"} as IBook);
+    const [bookForBookForm, setBookForBookForm] = useState<IBook>({} as IBook);
+    const [bookFilterRefresh, setBookFilterRefresh] = useState<IBookFilter>({} as IBookFilter);
 
     const createUpdateBook = (book: IBook) => {
         setModalVisible(false);
@@ -27,12 +28,11 @@ const Books: FC = () => {
         //Save book to server
         console.log("addNewBook: ");
         console.log(book)
-        book.user = user;
 
         if (book.id) {
-            sagaUpdateBook(book);
+            sagaUpdateBook(user, book, bookFilterRefresh);
         } else {
-            sagaSaveBook(book);
+            sagaSaveBook(user, book, bookFilterRefresh);
         }
     }
 
@@ -40,7 +40,6 @@ const Books: FC = () => {
 
         console.log("onEditBook: ");
         console.log(book)
-        book.user = user;
 
         setBookForBookForm(book);
         setModalVisible(true);
@@ -50,17 +49,16 @@ const Books: FC = () => {
 
         console.log("onDeleteBook: ");
         console.log(book)
-        book.user = user;
 
-        sagaDeleteBook(book);
+        sagaDeleteBook(user, book, bookFilterRefresh);
     }
 
     const onRefreshBook = (bookFilter: IBookFilter): void => {
         console.log("onRefreshBook: ");
         console.log(bookFilter)
 
-        bookFilter.user = user;
-        sagaLoadBooks(bookFilter);
+        setBookFilterRefresh(bookFilter);
+        sagaLoadBooks(user, bookFilter);
     }
 
     let isAdmin = jwtUtils.isAdmin(user);

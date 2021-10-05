@@ -1,5 +1,6 @@
 import {IBook} from "../../../models/IBook";
 import {IBookFilter} from "../../../models/IBookFilter";
+import {IUser} from "../../../models/IUser";
 
 export interface BookState {
     books: IBook[];
@@ -20,22 +21,37 @@ export interface SetBookAction {
 
 export interface SagaLoadBooksAction {
     type: BookActionEnum.SAGA_LOAD_BOOKS;
-    payload: IBookFilter;
+    payload: {
+        user: IUser,
+        filter: IBookFilter
+    };
 }
 
 export interface SagaSaveBookAction {
     type: BookActionEnum.SAGA_SAVE_BOOK;
-    payload: IBook;
+    payload: {
+        user: IUser,
+        book: IBook,
+        filter: IBookFilter
+    };
 }
 
 export interface SagaUpdateBookAction {
     type: BookActionEnum.SAGA_UPDATE_BOOK;
-    payload: IBook;
+    payload: {
+        user: IUser,
+        book: IBook,
+        filter: IBookFilter
+    };
 }
 
 export interface SagaDeleteBookAction {
     type: BookActionEnum.SAGA_DELETE_BOOK;
-    payload: IBook;
+    payload: {
+        user: IUser,
+        book: IBook,
+        filter: IBookFilter
+    };
 }
 
 export type BookAction =

@@ -4,11 +4,7 @@ import {IUser} from "../models/IUser";
 import {jwtUtils} from "../utils/jwt";
 import {IBookFilter} from "../models/IBookFilter";
 
-const SERVER_URL = 'http://localhost:8080';
-
-const BOOK_URL = {
-    loadBooks: SERVER_URL
-}
+const SERVER_URL = process.env.REACT_APP_SERVER_URL as string;
 
 export default class BookService {
 
@@ -16,6 +12,7 @@ export default class BookService {
 
         console.log("BookService.loadBooks bookFilter:");
         console.log(bookFilter);
+        console.log(SERVER_URL);
 
         return axios.get<IBook[]>(SERVER_URL, {...jwtUtils.getAuthorizationConfig(user), params: {title: bookFilter.title, author: bookFilter.author}});
     }
@@ -30,9 +27,5 @@ export default class BookService {
 
     static async deleteBook(user: IUser, book: IBook): Promise<AxiosResponse<IBook>> {
         return axios.delete<IBook>(SERVER_URL + '/books/' + book.id, jwtUtils.getAuthorizationConfig(user));
-    }
-
-    static BOOK_URL() : any {
-        return BOOK_URL;
     }
 }

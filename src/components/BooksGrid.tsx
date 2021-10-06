@@ -112,7 +112,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
                         <a hidden={!props.isAdmin} onClick={event => props.onEdit(book)}>Edit</a>
                         <a hidden={!props.isAdmin} onClick={event => props.onDelete(book)}>Delete</a>
                         <a hidden={(Array.isArray(book.reservations) && book.reservations.length > 0)} onClick={event => props.onReservation(book)}>Make a reservation</a>
-                        <span style={{color: "red"}} hidden={(!Array.isArray(book.reservations) || book.reservations.length == 0)}>{book.reservations[0].status}</span>
+                        <span style={{color: "red"}} hidden={(!Array.isArray(book.reservations) || book.reservations.length == 0)}>{book.reservations && book.reservations.length > 0 ? book.reservations[0].status : "" }</span>
                     </Space>
                 ),
             }

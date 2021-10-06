@@ -10,7 +10,8 @@ interface BooksGridProps {
     books: IBook[];
     onDelete: (book: IBook) => void;
     onEdit: (book: IBook) => void;
-    onRefresh: (bookFilter: IBookFilter) => void
+    onRefresh: (bookFilter: IBookFilter) => void;
+    onReservation: (book: IBook) => void;
 }
 
 const BooksGrid: FC<BooksGridProps> = (props) => {
@@ -110,6 +111,8 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
                     <Space size="middle">
                         <a hidden={!props.isAdmin} onClick={event => props.onEdit(book)}>Edit</a>
                         <a hidden={!props.isAdmin} onClick={event => props.onDelete(book)}>Delete</a>
+                        <a hidden={(Array.isArray(book.reservations) && book.reservations.length > 0)} onClick={event => props.onReservation(book)}>Make a reservation</a>
+                        <span style={{color: "red"}} hidden={(!Array.isArray(book.reservations) || book.reservations.length == 0)}>{book.reservations[0].status}</span>
                     </Space>
                 ),
             }

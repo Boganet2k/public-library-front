@@ -10,9 +10,9 @@ import {IBookFilter} from "../models/IBookFilter";
 
 const Books: FC = () => {
 
-    const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook} = useActions();
+    const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, setReservations} = useActions();
     const [modalVisible, setModalVisible] = useState(false);
-    const {books} = useTypedSelector(state => state.book);
+    const {books, reservations} = useTypedSelector(state => state.book);
     const {user} = useTypedSelector(state => state.auth);
 
     useEffect(() => {
@@ -21,6 +21,14 @@ const Books: FC = () => {
 
     const [bookForBookForm, setBookForBookForm] = useState<IBook>({} as IBook);
     const [bookFilterRefresh, setBookFilterRefresh] = useState<IBookFilter>({} as IBookFilter);
+
+    const onRefreshBook = (bookFilter: IBookFilter): void => {
+        console.log("onRefreshBook: ");
+        console.log(bookFilter)
+
+        setBookFilterRefresh(bookFilter);
+        sagaLoadBooks(user, bookFilter);
+    }
 
     const createUpdateBook = (book: IBook) => {
         setModalVisible(false);
@@ -53,15 +61,19 @@ const Books: FC = () => {
         sagaDeleteBook(user, book, bookFilterRefresh);
     }
 
-    const onRefreshBook = (bookFilter: IBookFilter): void => {
-        console.log("onRefreshBook: ");
-        console.log(bookFilter)
+    const onReservationBook = (book: IBook): void => {
+        console.log("onReservationBook: ");
+        console.log(book)
 
-        setBookFilterRefresh(bookFilter);
-        sagaLoadBooks(user, bookFilter);
+        sagaReservationBook(user, book, bookFilterRefresh);
+    }
+
+    const resetReservations = (): void => {
+        setReservations(null);
     }
 
     let isAdmin = jwtUtils.isAdmin(user);
+    let isNewReservationPresnt = reservations && reservations.length > 0;
 
     return (
         <Layout>
@@ -90,7 +102,26 @@ const Books: FC = () => {
                 :
                 <></>
             }
-            <BooksGrid isAdmin={isAdmin} books={books} onDelete={onDeleteBook} onEdit={onEditBook} onRefresh={onRefreshBook}/>
+
+            {isNewReservationPresnt ?
+                <Modal
+                    title="New Reservation"
+                    footer={null}
+                    visible={true}
+                    onCancel={() => resetReservations()}
+                >
+                    {
+                        reservations.map(reservation =>
+                            <div key={reservation.id}><h4>Book title:&nbsp;{reservation.book.title}</h4><br/>Reservation code:&nbsp;{reservation.code}</div>
+                        )
+                    }
+
+                </Modal>
+                :
+                <></>
+
+            }
+            <BooksGrid isAdmin={isAdmin} books={books} onRefresh={onRefreshBook} onEdit={onEditBook} onDelete={onDeleteBook} onReservation={onReservationBook} />
         </Layout>
     );
 };

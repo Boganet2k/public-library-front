@@ -1,9 +1,11 @@
 import {IBook} from "../../../models/IBook";
 import {IBookFilter} from "../../../models/IBookFilter";
 import {IUser} from "../../../models/IUser";
+import {IReservation} from "../../../models/IReservation";
 
 export interface BookState {
     books: IBook[];
+    reservations: IReservation[];
 }
 
 export enum BookActionEnum {
@@ -11,7 +13,9 @@ export enum BookActionEnum {
     SAGA_LOAD_BOOKS = "SAGA_LOAD_BOOKS",
     SAGA_SAVE_BOOK = "SAGA_SAVE_BOOK",
     SAGA_UPDATE_BOOK = "SAGA_UPDATE_BOOK",
-    SAGA_DELETE_BOOK = "SAGA_DELETE_BOOK"
+    SAGA_DELETE_BOOK = "SAGA_DELETE_BOOK",
+    SAGA_RESERVATION_BOOK = "SAGA_RESERVATION_BOOK",
+    SET_RESERVATION = "SET_RESERVATION"
 }
 
 export interface SetBookAction {
@@ -54,5 +58,19 @@ export interface SagaDeleteBookAction {
     };
 }
 
+export interface SagaReserveBookAction {
+    type: BookActionEnum.SAGA_RESERVATION_BOOK;
+    payload: {
+        user: IUser,
+        book: IBook,
+        filter: IBookFilter
+    };
+}
+
+export interface SetReservationAction {
+    type: BookActionEnum.SET_RESERVATION;
+    payload: IReservation | null;
+}
+
 export type BookAction =
-    SetBookAction
+    SetBookAction | SetReservationAction

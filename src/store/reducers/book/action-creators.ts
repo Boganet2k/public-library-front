@@ -1,8 +1,8 @@
 import {IBook} from "../../../models/IBook";
 import {
     BookActionEnum,
-    SagaDeleteBookAction,
-    SagaLoadBooksAction, SagaReserveBookAction,
+    SagaDeleteBookAction, SagaGiveOutBookAction,
+    SagaLoadBooksAction, SagaReserveBookAction, SagaReturnBookAction,
     SagaSaveBookAction,
     SagaUpdateBookAction,
     SetBookAction, SetReservationAction
@@ -27,6 +27,12 @@ export const BookActionCreators = {
             user, book, filter
         }}),
     sagaReservationBook: (user: IUser, book: IBook, filter: IBookFilter): SagaReserveBookAction => ({type: BookActionEnum.SAGA_RESERVATION_BOOK, payload: {
+            user, book, filter
+        }}),
+    sagaGiveOutBook: (user: IUser, book: IBook, filter: IBookFilter): SagaGiveOutBookAction => ({type: BookActionEnum.SAGA_GIVE_OUT_BOOK, payload: {
+            user, book, filter
+        }}),
+    sagaReturnBook: (user: IUser, book: IBook, filter: IBookFilter): SagaReturnBookAction => ({type: BookActionEnum.SAGA_RETURN_BOOK, payload: {
             user, book, filter
         }}),
     setReservations: (reservation: IReservation | null): SetReservationAction => ({type: BookActionEnum.SET_RESERVATION, payload: reservation}),

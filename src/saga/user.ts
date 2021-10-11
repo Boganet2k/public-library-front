@@ -63,8 +63,15 @@ function* signIn(user: IUser) {
 }
 
 function* signOut(user: IUser) {
-    yield call(UserService.signOut, user);
-    yield sagaUtils.updateAuthData(false, {} as IUser, "");
+
+    let error: string = yield ""
+
+    try {
+        yield call(UserService.signOut, user);
+    } catch (e) {
+        error = String(e)
+    }
+    yield sagaUtils.updateAuthData(false, {} as IUser, error);
 }
 
 export function* userWatcher() {

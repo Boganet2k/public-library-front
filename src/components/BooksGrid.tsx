@@ -1,9 +1,10 @@
-import React, {FC, Key, useEffect, useState} from 'react';
+import React, {FC, Key, ReactNode, useEffect, useState} from 'react';
 import {Table, Space, Input, Button} from "antd";
 import {SearchOutlined} from '@ant-design/icons';
 import {IBook} from "../models/IBook";
 import {ColumnType} from 'antd/lib/table';
 import {IBookFilter} from "../models/IBookFilter";
+import {FilterValue, SorterResult, TableCurrentDataSource, TablePaginationConfig} from "antd/lib/table/interface";
 
 interface BooksGridProps {
     isAdmin: boolean;
@@ -12,6 +13,8 @@ interface BooksGridProps {
     onEdit: (book: IBook) => void;
     onRefresh: (bookFilter: IBookFilter) => void;
     onReservation: (book: IBook) => void;
+    onGiveOut: (book: IBook) => void;
+    onReturn: (book: IBook) => void;
 }
 
 const BooksGrid: FC<BooksGridProps> = (props) => {
@@ -88,35 +91,80 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
         };
     }
 
+    let columns = [
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+            width: '30%',
+            ...tableColumnTextFilterConfig<IBook>('title'),
+        },
+        {
+            title: 'Author',
+            dataIndex: 'author',
+            key: 'author',
+            width: '30%',
+            ...tableColumnTextFilterConfig<IBook>('author'),
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            width: '10%',
+            filters: [
+                { text: 'available', value: 0 },
+                { text: 'reserved', value: 1 },
+                { text: 'lent', value: 2 },
+            ],
+            render: (text: string, book: IBook) => (
+                <Space size="small">
+                        <span style={{color: book.status == "available" ? "green" : book.status == "reserved" ? "orange" : "red"}}>{book.status}</span>
+                </Space>
+            )
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text: string, book: IBook) => (
+                <Space size="small">
+                    <a hidden={!props.isAdmin} onClick={event => props.onEdit(book)}>Edit</a>
+                    <a hidden={!props.isAdmin} onClick={event => props.onDelete(book)}>Delete</a>
+                    <a hidden={props.isAdmin || book.status !== "available"} onClick={event => props.onReservation(book)}>Reserve</a>
+                    <a hidden={!props.isAdmin || book.status !== "reserved"} onClick={event => props.onGiveOut(book)}>Lent</a>
+                    <a hidden={!props.isAdmin || book.status !== "lent"} onClick={event => props.onReturn(book)}>Return</a>
+                </Space>
+            ),
+        }
+    ];
+
+    if (props.isAdmin) {
+        columns.splice(3, 0, {
+            title: 'Reservation code',
+            dataIndex: 'code',
+            key: 'code',
+            width: '10%',
+            ...tableColumnTextFilterConfig<IBook>('code'),
+            render: (text: string, book: IBook) => (
+                <Space size="small">
+                    <span style={{fontWeight: "bold"}} hidden={(!Array.isArray(book.reservations) || book.reservations.length === 0)}>{book.reservations && book.reservations.length > 0 ? book.reservations[0].code : "" }</span>
+                </Space>
+            )
+        });
+    }
+
+    const handleTableChange = (pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, sorter: SorterResult<IBook> | SorterResult<IBook>[], extra: TableCurrentDataSource<IBook>) => {
+        console.log("handleTableChange");
+        console.log(pagination);
+        console.log(filters);
+
+        const newBookFilter = {...bookFilter, status: filters.status} as IBookFilter;
+        setBookFilter(newBookFilter);
+        props.onRefresh(newBookFilter);
+
+    };
+
     return (
-        <Table columns={[
-            {
-                title: 'Title',
-                dataIndex: 'title',
-                key: 'title',
-                width: '30%',
-                ...tableColumnTextFilterConfig<IBook>('title'),
-            },
-            {
-                title: 'Author',
-                dataIndex: 'author',
-                key: 'author',
-                width: '30%',
-                ...tableColumnTextFilterConfig<IBook>('author'),
-            },
-            {
-                title: 'Action',
-                key: 'action',
-                render: (text: string, book: IBook) => (
-                    <Space size="middle">
-                        <a hidden={!props.isAdmin} onClick={event => props.onEdit(book)}>Edit</a>
-                        <a hidden={!props.isAdmin} onClick={event => props.onDelete(book)}>Delete</a>
-                        <a hidden={(Array.isArray(book.reservations) && book.reservations.length > 0)} onClick={event => props.onReservation(book)}>Make a reservation</a>
-                        <span style={{color: "red"}} hidden={(!Array.isArray(book.reservations) || book.reservations.length == 0)}>{book.reservations && book.reservations.length > 0 ? book.reservations[0].status : "" }</span>
-                    </Space>
-                ),
-            }
-        ]}
+        <Table columns={columns}
                dataSource={data}
                onRow={(modelItem) => ({
                    onClick: (e) => {
@@ -130,6 +178,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
                        console.log(e);
                    }
                })}
+               onChange={handleTableChange}
         />
     );
 };

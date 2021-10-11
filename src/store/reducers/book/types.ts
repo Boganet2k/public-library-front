@@ -15,7 +15,9 @@ export enum BookActionEnum {
     SAGA_UPDATE_BOOK = "SAGA_UPDATE_BOOK",
     SAGA_DELETE_BOOK = "SAGA_DELETE_BOOK",
     SAGA_RESERVATION_BOOK = "SAGA_RESERVATION_BOOK",
-    SET_RESERVATION = "SET_RESERVATION"
+    SET_RESERVATION = "SET_RESERVATION",
+    SAGA_GIVE_OUT_BOOK = "SAGA_GIVE_OUT_BOOK",
+    SAGA_RETURN_BOOK = "SAGA_RETURN_BOOK",
 }
 
 export interface SetBookAction {
@@ -60,6 +62,24 @@ export interface SagaDeleteBookAction {
 
 export interface SagaReserveBookAction {
     type: BookActionEnum.SAGA_RESERVATION_BOOK;
+    payload: {
+        user: IUser,
+        book: IBook,
+        filter: IBookFilter
+    };
+}
+
+export interface SagaGiveOutBookAction {
+    type: BookActionEnum.SAGA_GIVE_OUT_BOOK;
+    payload: {
+        user: IUser,
+        book: IBook,
+        filter: IBookFilter
+    };
+}
+
+export interface SagaReturnBookAction {
+    type: BookActionEnum.SAGA_RETURN_BOOK;
     payload: {
         user: IUser,
         book: IBook,

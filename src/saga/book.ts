@@ -1,8 +1,8 @@
 import {put, takeEvery, call} from "redux-saga/effects";
 import {
     BookActionEnum,
-    SagaDeleteBookAction,
-    SagaLoadBooksAction, SagaReserveBookAction,
+    SagaDeleteBookAction, SagaGiveOutBookAction,
+    SagaLoadBooksAction, SagaReserveBookAction, SagaReturnBookAction,
     SagaSaveBookAction,
     SagaUpdateBookAction
 } from "../store/reducers/book/types";
@@ -42,7 +42,21 @@ function* deleteBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
 }
 
 function* reserveBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    let response: AxiosResponse<IReservation> = yield call(ReservationService.saveReservation, user, book);
+    let response: AxiosResponse<IReservation> = yield call(ReservationService.reserve, user, book);
+    yield response.data.book = book;
+    yield put(BookActionCreators.setReservations(response.data))
+    yield loadBook(user, bookFilter);
+}
+
+function* giveOutBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
+    let response: AxiosResponse<IReservation> = yield call(ReservationService.giveOut, user, book);
+    yield response.data.book = book;
+    yield put(BookActionCreators.setReservations(response.data))
+    yield loadBook(user, bookFilter);
+}
+
+function* returnBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
+    let response: AxiosResponse<IReservation> = yield call(ReservationService.return, user, book);
     yield response.data.book = book;
     yield put(BookActionCreators.setReservations(response.data))
     yield loadBook(user, bookFilter);
@@ -54,4 +68,6 @@ export function* bookWatcher() {
     yield takeEvery(BookActionEnum.SAGA_UPDATE_BOOK, (action: SagaUpdateBookAction) => updateBook(action.payload.user, action.payload.book, action.payload.filter));
     yield takeEvery(BookActionEnum.SAGA_DELETE_BOOK, (action: SagaDeleteBookAction) => deleteBook(action.payload.user, action.payload.book, action.payload.filter));
     yield takeEvery(BookActionEnum.SAGA_RESERVATION_BOOK, (action: SagaReserveBookAction) => reserveBook(action.payload.user, action.payload.book, action.payload.filter));
+    yield takeEvery(BookActionEnum.SAGA_GIVE_OUT_BOOK, (action: SagaGiveOutBookAction) => giveOutBook(action.payload.user, action.payload.book, action.payload.filter));
+    yield takeEvery(BookActionEnum.SAGA_RETURN_BOOK, (action: SagaReturnBookAction) => returnBook(action.payload.user, action.payload.book, action.payload.filter));
 }

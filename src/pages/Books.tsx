@@ -10,7 +10,7 @@ import {IBookFilter} from "../models/IBookFilter";
 
 const Books: FC = () => {
 
-    const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, setReservations} = useActions();
+    const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, sagaGiveOutBook, sagaReturnBook, setReservations} = useActions();
     const [modalVisible, setModalVisible] = useState(false);
     const {books, reservations} = useTypedSelector(state => state.book);
     const {user} = useTypedSelector(state => state.auth);
@@ -68,12 +68,26 @@ const Books: FC = () => {
         sagaReservationBook(user, book, bookFilterRefresh);
     }
 
+    const onGiveOutBook = (book: IBook): void => {
+        console.log("onGiveOutBook: ");
+        console.log(book)
+
+        sagaGiveOutBook(user, book, bookFilterRefresh);
+    }
+
+    const onReturnBook = (book: IBook): void => {
+        console.log("onReturnBook: ");
+        console.log(book)
+
+        sagaReturnBook(user, book, bookFilterRefresh);
+    }
+
     const resetReservations = (): void => {
         setReservations(null);
     }
 
     let isAdmin = jwtUtils.isAdmin(user);
-    let isNewReservationPresnt = reservations && reservations.length > 0;
+    let isNewReservationPresent = reservations && reservations.length > 0;
 
     return (
         <Layout>
@@ -103,7 +117,7 @@ const Books: FC = () => {
                 <></>
             }
 
-            {isNewReservationPresnt ?
+            {isNewReservationPresent ?
                 <Modal
                     title="New Reservation"
                     footer={null}
@@ -111,8 +125,20 @@ const Books: FC = () => {
                     onCancel={() => resetReservations()}
                 >
                     {
-                        reservations.map(reservation =>
-                            <div key={reservation.id}><h4>Book title:&nbsp;{reservation.book.title}</h4><br/>Reservation code:&nbsp;{reservation.code}</div>
+                        reservations.map(reservation => {
+
+                                if (reservation.status === 'reserved') {
+                                    return <div key={reservation.id}><h4>Book title:&nbsp;{reservation.book.title}</h4><br/>Reservation
+                                        code:&nbsp;{reservation.code}</div>
+                                } else if (reservation.status === 'lent' && reservation.to) {
+                                    return <div key={reservation.id}><h4>Book title:&nbsp;{reservation.book.title}</h4><br/>was returned</div>
+                                } else if (reservation.status === 'lent') {
+                                    return <div key={reservation.id}><h4>Book title:&nbsp;{reservation.book.title}</h4><br/>was give out</div>
+                                } else {
+                                    return <div></div>
+                                }
+
+                            }
                         )
                     }
 
@@ -121,9 +147,17 @@ const Books: FC = () => {
                 <></>
 
             }
-            <BooksGrid isAdmin={isAdmin} books={books} onRefresh={onRefreshBook} onEdit={onEditBook} onDelete={onDeleteBook} onReservation={onReservationBook} />
+            <BooksGrid isAdmin={isAdmin}
+                       books={books}
+                       onRefresh={onRefreshBook}
+                       onEdit={onEditBook}
+                       onDelete={onDeleteBook}
+                       onReservation={onReservationBook}
+                       onGiveOut={onGiveOutBook}
+                       onReturn={onReturnBook}
+            />
         </Layout>
     );
-};
+}
 
 export default Books;

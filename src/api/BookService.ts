@@ -11,10 +11,10 @@ export default class BookService {
     static async loadBooks(user: IUser, bookFilter: IBookFilter): Promise<AxiosResponse<IBook[]>> {
 
         console.log("BookService.loadBooks bookFilter:");
-        console.log(bookFilter);
+        console.log(bookFilter.status);
         console.log(SERVER_URL);
 
-        return axios.get<IBook[]>(SERVER_URL, {...jwtUtils.getAuthorizationConfig(user), params: {title: bookFilter.title, author: bookFilter.author}});
+        return axios.get<IBook[]>(SERVER_URL, {...jwtUtils.getAuthorizationConfig(user), params: {title: bookFilter.title, author: bookFilter.author, code: bookFilter.code, status: bookFilter.status}});
     }
 
     static async saveBook(user: IUser, book: IBook): Promise<AxiosResponse<IBook>> {

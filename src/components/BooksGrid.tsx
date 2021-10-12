@@ -9,6 +9,7 @@ import {FilterValue, SorterResult, TableCurrentDataSource, TablePaginationConfig
 interface BooksGridProps {
     isAdmin: boolean;
     books: IBook[];
+    total: number;
     onDelete: (book: IBook) => void;
     onEdit: (book: IBook) => void;
     onRefresh: (bookFilter: IBookFilter) => void;
@@ -19,11 +20,18 @@ interface BooksGridProps {
 
 const BooksGrid: FC<BooksGridProps> = (props) => {
 
-    const [bookFilter, setBookFilter] = useState({} as IBookFilter)
+    const [bookFilter, setBookFilter] = useState({
+        current: 1,
+        pageSize: 10
+    } as IBookFilter)
 
     let data: IBook[] = props.books.map((bookItem) => {
         return {...bookItem, key: bookItem.id.toString()}
     });
+
+    useEffect(() => {
+        props.onRefresh(bookFilter);
+    }, [])
 
     const handleSearch = (dataIndex: string, selectedKeys: Key[], confirm: () => void) => {
 
@@ -157,7 +165,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
         console.log(pagination);
         console.log(filters);
 
-        const newBookFilter = {...bookFilter, status: filters.status} as IBookFilter;
+        const newBookFilter = {...bookFilter, status: filters.status, current: pagination.current, pageSize: pagination.pageSize} as IBookFilter;
         setBookFilter(newBookFilter);
         props.onRefresh(newBookFilter);
 
@@ -166,6 +174,13 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
     return (
         <Table columns={columns}
                dataSource={data}
+               pagination = {
+                   {
+                       current: bookFilter.current,
+                       pageSize: bookFilter.pageSize,
+                       total: props.total
+                   }
+               }
                onRow={(modelItem) => ({
                    onClick: (e) => {
                        console.log("onClick");

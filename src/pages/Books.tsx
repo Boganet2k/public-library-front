@@ -12,12 +12,8 @@ const Books: FC = () => {
 
     const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, sagaGiveOutBook, sagaReturnBook, setReservations, setBooksError} = useActions();
     const [modalVisible, setModalVisible] = useState(false);
-    const {books, reservations, error} = useTypedSelector(state => state.book);
+    const {books, total, reservations, error} = useTypedSelector(state => state.book);
     const {user} = useTypedSelector(state => state.auth);
-
-    useEffect(() => {
-        sagaLoadBooks(user, {} as IBookFilter);
-    }, [])
 
     const [bookForBookForm, setBookForBookForm] = useState<IBook>({} as IBook);
     const [bookFilterRefresh, setBookFilterRefresh] = useState<IBookFilter>({} as IBookFilter);
@@ -156,6 +152,7 @@ const Books: FC = () => {
             }
             <BooksGrid isAdmin={isAdmin}
                        books={books}
+                       total={total}
                        onRefresh={onRefreshBook}
                        onEdit={onEditBook}
                        onDelete={onDeleteBook}

@@ -5,6 +5,7 @@ import {IReservation} from "../../../models/IReservation";
 
 export interface BookState {
     books: IBook[];
+    total: number;
     reservations: IReservation[];
     error: string | null;
 }
@@ -24,7 +25,10 @@ export enum BookActionEnum {
 
 export interface SetBookAction {
     type: BookActionEnum.SET_BOOKS;
-    payload: IBook[];
+    payload: {
+        books: IBook[],
+        total: number
+    };
 }
 
 export interface SetBookErrorAction {

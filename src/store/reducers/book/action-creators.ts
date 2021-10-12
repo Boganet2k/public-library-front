@@ -5,7 +5,7 @@ import {
     SagaLoadBooksAction, SagaReserveBookAction, SagaReturnBookAction,
     SagaSaveBookAction,
     SagaUpdateBookAction,
-    SetBookAction, SetReservationAction
+    SetBookAction, SetBookErrorAction, SetReservationAction
 } from "./types";
 import {IBookFilter} from "../../../models/IBookFilter";
 import {IUser} from "../../../models/IUser";
@@ -14,6 +14,7 @@ import {IReservation} from "../../../models/IReservation";
 
 export const BookActionCreators = {
     setBooks: (books: IBook[]): SetBookAction => ({type: BookActionEnum.SET_BOOKS, payload: books}),
+    setBooksError: (error: string | null): SetBookErrorAction => ({type: BookActionEnum.SET_BOOKS_ERROR, payload: error}),
     sagaLoadBooks: (user: IUser, filter: IBookFilter): SagaLoadBooksAction => ({type: BookActionEnum.SAGA_LOAD_BOOKS, payload: {
             user, filter
         }}),

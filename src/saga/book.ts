@@ -18,6 +18,7 @@ import {IReservation} from "../models/IReservation";
 import {IBookData} from "../models/IBookData";
 
 function* loadBook(user: IUser, bookFilter: IBookFilter) {
+    yield put(BookActionCreators.setBooksLoading(true));
     try {
         let response: AxiosResponse<IBookData> = yield call(BookService.loadBooks, user, bookFilter);
 
@@ -31,6 +32,7 @@ function* loadBook(user: IUser, bookFilter: IBookFilter) {
     } catch (e) {
         yield put(BookActionCreators.setBooksError((e as Error).message));
     }
+    yield put(BookActionCreators.setBooksLoading(false));
 }
 
 function* saveBook(user: IUser, book: IBook, bookFilter: IBookFilter) {

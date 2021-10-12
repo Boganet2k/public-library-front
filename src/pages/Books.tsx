@@ -12,7 +12,7 @@ const Books: FC = () => {
 
     const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, sagaGiveOutBook, sagaReturnBook, setReservations, setBooksError} = useActions();
     const [modalVisible, setModalVisible] = useState(false);
-    const {books, total, reservations, error} = useTypedSelector(state => state.book);
+    const {books, total, reservations, error, isLoading} = useTypedSelector(state => state.book);
     const {user} = useTypedSelector(state => state.auth);
 
     const [bookForBookForm, setBookForBookForm] = useState<IBook>({} as IBook);
@@ -159,6 +159,7 @@ const Books: FC = () => {
                        onReservation={onReservationBook}
                        onGiveOut={onGiveOutBook}
                        onReturn={onReturnBook}
+                       isLoading={isLoading}
             />
         </Layout>
     );

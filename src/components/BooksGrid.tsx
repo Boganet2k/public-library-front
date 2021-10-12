@@ -16,6 +16,7 @@ interface BooksGridProps {
     onReservation: (book: IBook) => void;
     onGiveOut: (book: IBook) => void;
     onReturn: (book: IBook) => void;
+    isLoading: boolean;
 }
 
 const BooksGrid: FC<BooksGridProps> = (props) => {
@@ -194,6 +195,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
                    }
                })}
                onChange={handleTableChange}
+               loading={props.isLoading}
         />
     );
 };

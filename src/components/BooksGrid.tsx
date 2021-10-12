@@ -22,7 +22,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
 
     const [bookFilter, setBookFilter] = useState({
         current: 1,
-        pageSize: 3
+        pageSize: 10
     } as IBookFilter)
 
     let data: IBook[] = props.books.map((bookItem) => {

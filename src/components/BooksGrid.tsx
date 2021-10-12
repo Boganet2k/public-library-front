@@ -22,7 +22,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
 
     const [bookFilter, setBookFilter] = useState({
         current: 1,
-        pageSize: 10
+        pageSize: 3
     } as IBookFilter)
 
     let data: IBook[] = props.books.map((bookItem) => {
@@ -37,7 +37,7 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
 
         confirm();
 
-        const newBookFilter = {...bookFilter, [dataIndex]: selectedKeys[0]} as IBookFilter;
+        const newBookFilter = {...bookFilter, [dataIndex]: selectedKeys[0], current: 1} as IBookFilter;
         setBookFilter(newBookFilter);
         props.onRefresh(newBookFilter);
     };
@@ -46,9 +46,20 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
 
         clearFilters();
 
-        const newBookFilter = {...bookFilter, [dataIndex]: null} as IBookFilter;
+        const newBookFilter = {...bookFilter, [dataIndex]: null, current: 1} as IBookFilter;
         setBookFilter(newBookFilter);
         props.onRefresh(newBookFilter);
+    };
+
+    const handleTableChange = (pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, sorter: SorterResult<IBook> | SorterResult<IBook>[], extra: TableCurrentDataSource<IBook>) => {
+        console.log("handleTableChange");
+        console.log(pagination);
+        console.log(filters);
+
+        const newBookFilter = {...bookFilter, status: filters.status, current: pagination.current == bookFilter.current ? 1 : pagination.current, pageSize: pagination.pageSize} as IBookFilter;
+        setBookFilter(newBookFilter);
+        props.onRefresh(newBookFilter);
+
     };
 
     function tableColumnTextFilterConfig<T>(dataIndex: string): ColumnType<T> {
@@ -159,17 +170,6 @@ const BooksGrid: FC<BooksGridProps> = (props) => {
             )
         });
     }
-
-    const handleTableChange = (pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, sorter: SorterResult<IBook> | SorterResult<IBook>[], extra: TableCurrentDataSource<IBook>) => {
-        console.log("handleTableChange");
-        console.log(pagination);
-        console.log(filters);
-
-        const newBookFilter = {...bookFilter, status: filters.status, current: pagination.current, pageSize: pagination.pageSize} as IBookFilter;
-        setBookFilter(newBookFilter);
-        props.onRefresh(newBookFilter);
-
-    };
 
     return (
         <Table columns={columns}

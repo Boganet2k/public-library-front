@@ -21,11 +21,11 @@ function* loadBook(user: IUser, bookFilter: IBookFilter) {
     try {
         let response: AxiosResponse<IBookData> = yield call(BookService.loadBooks, user, bookFilter);
 
-        let testIBookData = {} as IBookData;
-
-        if (response.status !== 200 || !(typeof response.data == typeof testIBookData )) {
+        if (response.status !== 200 || !("books" in response.data && "total" in response.data)) {
+            yield console.log("loadBook_1");
             yield sagaUtils.updateAuthData(false, {} as IUser, "");
         } else {
+            yield console.log("loadBook_2");
             yield put(BookActionCreators.setBooks(response.data.books, response.data.total))
         }
     } catch (e) {

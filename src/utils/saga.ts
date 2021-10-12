@@ -1,6 +1,7 @@
 import {IUser} from "../models/IUser";
 import {put} from "redux-saga/effects";
 import {AuthActionCreators} from "../store/reducers/auth/action-creators";
+import {BookActionCreators} from "../store/reducers/book/action-creators";
 
 export const sagaUtils = {
     *updateAuthData(isAuth: boolean, user: IUser, error: string) {

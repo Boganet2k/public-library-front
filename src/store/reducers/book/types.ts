@@ -6,10 +6,12 @@ import {IReservation} from "../../../models/IReservation";
 export interface BookState {
     books: IBook[];
     reservations: IReservation[];
+    error: string | null;
 }
 
 export enum BookActionEnum {
     SET_BOOKS = "SET_BOOKS",
+    SET_BOOKS_ERROR = "SET_BOOKS_ERROR",
     SAGA_LOAD_BOOKS = "SAGA_LOAD_BOOKS",
     SAGA_SAVE_BOOK = "SAGA_SAVE_BOOK",
     SAGA_UPDATE_BOOK = "SAGA_UPDATE_BOOK",
@@ -17,12 +19,17 @@ export enum BookActionEnum {
     SAGA_RESERVATION_BOOK = "SAGA_RESERVATION_BOOK",
     SET_RESERVATION = "SET_RESERVATION",
     SAGA_GIVE_OUT_BOOK = "SAGA_GIVE_OUT_BOOK",
-    SAGA_RETURN_BOOK = "SAGA_RETURN_BOOK",
+    SAGA_RETURN_BOOK = "SAGA_RETURN_BOOK"
 }
 
 export interface SetBookAction {
     type: BookActionEnum.SET_BOOKS;
     payload: IBook[];
+}
+
+export interface SetBookErrorAction {
+    type: BookActionEnum.SET_BOOKS_ERROR;
+    payload: string | null;
 }
 
 export interface SagaLoadBooksAction {
@@ -93,4 +100,4 @@ export interface SetReservationAction {
 }
 
 export type BookAction =
-    SetBookAction | SetReservationAction
+    SetBookAction | SetReservationAction | SetBookErrorAction

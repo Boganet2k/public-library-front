@@ -2,7 +2,7 @@ import React, {FC, useEffect, useState} from 'react';
 import BooksGrid from "../components/BooksGrid";
 import {useActions} from "../hooks/useActions";
 import {useTypedSelector} from "../hooks/useTypedSelector";
-import {Button, Layout, Modal, Row} from "antd";
+import {Button, Layout, Modal, Row, Alert} from "antd";
 import {IBook} from "../models/IBook";
 import BookForm from "../components/BookForm";
 import {jwtUtils} from "../utils/jwt";
@@ -10,9 +10,9 @@ import {IBookFilter} from "../models/IBookFilter";
 
 const Books: FC = () => {
 
-    const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, sagaGiveOutBook, sagaReturnBook, setReservations} = useActions();
+    const {sagaLoadBooks, sagaSaveBook, sagaUpdateBook, sagaDeleteBook, sagaReservationBook, sagaGiveOutBook, sagaReturnBook, setReservations, setBooksError} = useActions();
     const [modalVisible, setModalVisible] = useState(false);
-    const {books, reservations} = useTypedSelector(state => state.book);
+    const {books, reservations, error} = useTypedSelector(state => state.book);
     const {user} = useTypedSelector(state => state.auth);
 
     useEffect(() => {
@@ -101,6 +101,13 @@ const Books: FC = () => {
                     New book
                 </Button>
             </Row>
+
+            {error ?
+                <Alert type="error" message={error} closable closeText="Hide error" afterClose={() => setBooksError(null)}/>
+                :
+                <div/>
+            }
+
             {modalVisible ?
                 <Modal
                     title={bookForBookForm.id ? "Edit book" : "New book"}
@@ -158,6 +165,6 @@ const Books: FC = () => {
             />
         </Layout>
     );
-}
+};
 
 export default Books;

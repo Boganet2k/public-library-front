@@ -17,49 +17,77 @@ import ReservationService from "../api/ReservationService";
 import {IReservation} from "../models/IReservation";
 
 function* loadBook(user: IUser, bookFilter: IBookFilter) {
-    let response: AxiosResponse<IBook[]> = yield call(BookService.loadBooks, user, bookFilter);
+    try {
+        let response: AxiosResponse<IBook[]> = yield call(BookService.loadBooks, user, bookFilter);
 
-    if (response.status !== 200 || !Array.isArray(response.data)) {
-        yield sagaUtils.updateAuthData(false, {} as IUser, "");
-    } else {
-        yield put(BookActionCreators.setBooks(response.data))
+        if (response.status !== 200 || !Array.isArray(response.data)) {
+            yield sagaUtils.updateAuthData(false, {} as IUser, "");
+        } else {
+            yield put(BookActionCreators.setBooks(response.data))
+        }
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
     }
 }
 
 function* saveBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    yield call(BookService.saveBook, user, book);
-    yield loadBook(user, bookFilter);
+    try {
+        yield call(BookService.saveBook, user, book);
+        yield loadBook(user, bookFilter);
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
+    }
 }
 
 function* updateBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    yield call(BookService.updateBook, user, book);
-    yield loadBook(user, bookFilter);
+    try {
+        yield call(BookService.updateBook, user, book);
+        yield loadBook(user, bookFilter);
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
+    }
 }
 
 function* deleteBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    yield call(BookService.deleteBook, user, book);
-    yield loadBook(user, bookFilter);
+    try {
+        yield call(BookService.deleteBook, user, book);
+        yield loadBook(user, bookFilter);
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
+    }
 }
 
 function* reserveBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    let response: AxiosResponse<IReservation> = yield call(ReservationService.reserve, user, book);
-    yield response.data.book = book;
-    yield put(BookActionCreators.setReservations(response.data))
-    yield loadBook(user, bookFilter);
+    try {
+        let response: AxiosResponse<IReservation> = yield call(ReservationService.reserve, user, book);
+        yield response.data.book = book;
+        yield put(BookActionCreators.setReservations(response.data))
+        yield loadBook(user, bookFilter);
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
+    }
 }
 
 function* giveOutBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    let response: AxiosResponse<IReservation> = yield call(ReservationService.giveOut, user, book);
-    yield response.data.book = book;
-    yield put(BookActionCreators.setReservations(response.data))
-    yield loadBook(user, bookFilter);
+    try {
+        let response: AxiosResponse<IReservation> = yield call(ReservationService.giveOut, user, book);
+        yield response.data.book = book;
+        yield put(BookActionCreators.setReservations(response.data))
+        yield loadBook(user, bookFilter);
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
+    }
 }
 
 function* returnBook(user: IUser, book: IBook, bookFilter: IBookFilter) {
-    let response: AxiosResponse<IReservation> = yield call(ReservationService.return, user, book);
-    yield response.data.book = book;
-    yield put(BookActionCreators.setReservations(response.data))
-    yield loadBook(user, bookFilter);
+    try {
+        let response: AxiosResponse<IReservation> = yield call(ReservationService.return, user, book);
+        yield response.data.book = book;
+        yield put(BookActionCreators.setReservations(response.data))
+        yield loadBook(user, bookFilter);
+    } catch (e) {
+        yield put(BookActionCreators.setBooksError((e as Error).message));
+    }
 }
 
 export function* bookWatcher() {

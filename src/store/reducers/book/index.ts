@@ -2,7 +2,8 @@ import {BookAction, BookActionEnum, BookState} from "./types"
 
 const initialState: BookState = {
     books: [],
-    reservations: []
+    reservations: [],
+    error: null
 }
 
 export default function bookReducer(state = initialState, action: BookAction): BookState {
@@ -15,6 +16,8 @@ export default function bookReducer(state = initialState, action: BookAction): B
             } else {
                 return {...state, reservations: []};
             }
+        case BookActionEnum.SET_BOOKS_ERROR:
+            return {...state, error: action.payload};
         default:
             return state;
     }

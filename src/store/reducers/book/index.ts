@@ -2,6 +2,7 @@ import {BookAction, BookActionEnum, BookState} from "./types"
 
 const initialState: BookState = {
     books: [],
+    total: 0,
     reservations: [],
     error: null
 }
@@ -9,7 +10,7 @@ const initialState: BookState = {
 export default function bookReducer(state = initialState, action: BookAction): BookState {
     switch (action.type) {
         case BookActionEnum.SET_BOOKS:
-            return {...state, books: action.payload};
+            return {...state, books: action.payload.books, total: action.payload.total};
         case BookActionEnum.SET_RESERVATION:
             if (action.payload) {
                 return {...state, reservations: [...state.reservations, action.payload]};

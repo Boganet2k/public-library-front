@@ -15,15 +15,18 @@ import {IBookFilter} from "../models/IBookFilter";
 import {sagaUtils} from "../utils/saga";
 import ReservationService from "../api/ReservationService";
 import {IReservation} from "../models/IReservation";
+import {IBookData} from "../models/IBookData";
 
 function* loadBook(user: IUser, bookFilter: IBookFilter) {
     try {
-        let response: AxiosResponse<IBook[]> = yield call(BookService.loadBooks, user, bookFilter);
+        let response: AxiosResponse<IBookData> = yield call(BookService.loadBooks, user, bookFilter);
 
-        if (response.status !== 200 || !Array.isArray(response.data)) {
+        let testIBookData = {} as IBookData;
+
+        if (response.status !== 200 || !(typeof response.data == typeof testIBookData )) {
             yield sagaUtils.updateAuthData(false, {} as IUser, "");
         } else {
-            yield put(BookActionCreators.setBooks(response.data))
+            yield put(BookActionCreators.setBooks(response.data.books, response.data.total))
         }
     } catch (e) {
         yield put(BookActionCreators.setBooksError((e as Error).message));

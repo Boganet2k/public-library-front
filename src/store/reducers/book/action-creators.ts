@@ -13,7 +13,9 @@ import {IReservation} from "../../../models/IReservation";
 
 
 export const BookActionCreators = {
-    setBooks: (books: IBook[]): SetBookAction => ({type: BookActionEnum.SET_BOOKS, payload: books}),
+    setBooks: (books: IBook[] = [], total: number): SetBookAction => ({type: BookActionEnum.SET_BOOKS, payload: {
+        books, total
+        }}),
     setBooksError: (error: string | null): SetBookErrorAction => ({type: BookActionEnum.SET_BOOKS_ERROR, payload: error}),
     sagaLoadBooks: (user: IUser, filter: IBookFilter): SagaLoadBooksAction => ({type: BookActionEnum.SAGA_LOAD_BOOKS, payload: {
             user, filter

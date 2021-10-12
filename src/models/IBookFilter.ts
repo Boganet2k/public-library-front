@@ -3,4 +3,6 @@ export interface IBookFilter {
     author: string;
     code: string;
     status: number[];
+    current: number;
+    pageSize: number;
 }

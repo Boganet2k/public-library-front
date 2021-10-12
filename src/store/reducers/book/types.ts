@@ -8,11 +8,13 @@ export interface BookState {
     total: number;
     reservations: IReservation[];
     error: string | null;
+    isLoading: boolean;
 }
 
 export enum BookActionEnum {
     SET_BOOKS = "SET_BOOKS",
     SET_BOOKS_ERROR = "SET_BOOKS_ERROR",
+    SET_BOOKS_LOADING = "SET_BOOKS_LOADING",
     SAGA_LOAD_BOOKS = "SAGA_LOAD_BOOKS",
     SAGA_SAVE_BOOK = "SAGA_SAVE_BOOK",
     SAGA_UPDATE_BOOK = "SAGA_UPDATE_BOOK",
@@ -34,6 +36,11 @@ export interface SetBookAction {
 export interface SetBookErrorAction {
     type: BookActionEnum.SET_BOOKS_ERROR;
     payload: string | null;
+}
+
+export interface SetBookLoadingAction {
+    type: BookActionEnum.SET_BOOKS_LOADING;
+    payload: boolean;
 }
 
 export interface SagaLoadBooksAction {
@@ -104,4 +111,4 @@ export interface SetReservationAction {
 }
 
 export type BookAction =
-    SetBookAction | SetReservationAction | SetBookErrorAction
+    SetBookAction | SetReservationAction | SetBookErrorAction | SetBookLoadingAction

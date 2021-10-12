@@ -4,7 +4,8 @@ const initialState: BookState = {
     books: [],
     total: 0,
     reservations: [],
-    error: null
+    error: null,
+    isLoading: false
 }
 
 export default function bookReducer(state = initialState, action: BookAction): BookState {
@@ -19,6 +20,8 @@ export default function bookReducer(state = initialState, action: BookAction): B
             }
         case BookActionEnum.SET_BOOKS_ERROR:
             return {...state, error: action.payload};
+        case BookActionEnum.SET_BOOKS_LOADING:
+            return {...state, isLoading: action.payload};
         default:
             return state;
     }
